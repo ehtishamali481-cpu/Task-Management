@@ -39,10 +39,16 @@ export async function POST(req) {
         });
         response.cookies.set("token", token, {
             httpOnly: true,
-            path: "/"
+            path: "/",
+            secure: true,
+            sameSite: "lax"
         });
         return response
     } catch (error) {
         console.log("login error", error)
+        return NextResponse.json(
+            { message: "Internal server error" },
+            { status: 500 }
+        )
     }
 }
