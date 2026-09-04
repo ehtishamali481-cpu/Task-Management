@@ -38,7 +38,8 @@ This application allows users to create, manage, and track tasks efficiently wit
 
 | Admin Dashboard | Task Overview |
 | :---: | :---: |
-| <img width="933" alt="Admin Dashboard" src="https://github.com/user-attachments/assets/ae437474-3c95-4b0e-b30b-2b7ce2fdfb74" /> | <img width="951" alt="Task Table" src="https://github.com/user-attachments/assets/2b32ff52-3e9b-4b33-a141-7392f6fbceea" /> |
+![Uploading image.png…]()
+
 
 | User Dashboard | Registration Screen |
 | :---: | :---: |
