@@ -35,6 +35,8 @@ This application allows users to create, manage, and track tasks efficiently wit
 ---
 
 ## 🖼 Screenshots
+<img width="1359" height="651" alt="Screenshot 2026-09-04 060543" src="https://github.com/user-attachments/assets/45880807-5b94-4450-b75d-6103be1e9711" />
+
 
 | Admin Dashboard | Task Overview |
 | User Dashboard | Registration Screen |
