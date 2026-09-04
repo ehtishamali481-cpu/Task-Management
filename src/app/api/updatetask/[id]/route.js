@@ -18,6 +18,9 @@ export async function PUT(req, { params }) {
         const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
         const { payload } = await jwtVerify(token, secret);
+        if (payload.role === "viewer") {
+            return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+        }
 
         const userName = payload.userName;
 

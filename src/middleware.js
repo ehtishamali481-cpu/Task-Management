@@ -12,8 +12,11 @@ export async function middleware(req) {
         const secret = new TextEncoder().encode(process.env.JWT_SECRET);
         const { payload } = await jwtVerify(token, secret);
         if (req.nextUrl.pathname.startsWith("/dashboard/admin")) {
-            if (payload.role !== "admin") {
+            if (payload.role !== "admin" && payload.role !== "viewer") {
                 return NextResponse.redirect(new URL("/login", req.url));
+            }
+            if (payload.role === "viewer" && (req.nextUrl.pathname.startsWith("/dashboard/admin/task") || req.nextUrl.pathname.startsWith("/dashboard/admin/register"))) {
+                return NextResponse.redirect(new URL("/dashboard/admin", req.url));
             }
         }
         if (req.nextUrl.pathname.startsWith("/dashboard/user")) {
@@ -23,7 +26,6 @@ export async function middleware(req) {
         }
         return NextResponse.next();
     } catch (error) {
-        console.log("middeleware error", error);
         const response = NextResponse.redirect(new URL("/login", req.url));
         response.cookies.delete("token");
         return response;

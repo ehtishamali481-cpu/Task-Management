@@ -27,6 +27,10 @@ const taskSchema = new Schema({
     },
     completedAt: {
         type: Date
+    },
+    expireAt: {
+        type: Date,
+        expires: 0
     }
 }, {
     timestamps: true

@@ -1,23 +1,43 @@
-'use client'
+"use client"
+import { useEffect, useState } from "react";
+import { useRef } from "react";
+import "./loginpage.css";
+import Image from 'next/image';
+import { UiPicture } from '../Picture';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
-import { LoginPage } from './LoginPageStyle';
-import { UiPicture } from '../Picture';
-import Image from 'next/image';
-import { useRef } from 'react';
 import { MdEmail } from "react-icons/md";
 import { FaKey } from "react-icons/fa";
 import { IoIosEye } from "react-icons/io";
 import { IoEyeOffSharp } from "react-icons/io5";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+export default function Login() {
+    const [isOn, setIsOn] = useState(false);
+    const [pulling, setPulling] = useState(false);
 
+    const startY = useRef(0);
 
+    const handleMouseDown = (e) => {
+        startY.current = e.clientY;
+        setPulling(true);
+    };
 
+    const handleMouseLeave = () => {
+        setPulling(false);
+    };
 
+    const handleMouseUp = (e) => {
+        setPulling(false);
 
-
-const Login = () => {
+        if (e.clientY - startY.current > 20) {
+            setIsOn((prev) => !prev);
+        }
+    };
+    useEffect(() => {
+        document.body.classList.toggle("is-lit", isOn);
+    }, [isOn]);
     const router = useRouter();
     const [formInput, setFormInput] = useState({
         email: "",
@@ -46,41 +66,76 @@ const Login = () => {
     };
     const formSubmit = async (e) => {
         e.preventDefault();
-        const res = await axios.post("/api/login", formInput);
-        const data = res.data;
-        if (res.status === 200 || res.status === 201) {
-            if (data.role === "admin") {
-                router.push("/dashboard/admin")
-            } else {
-                router.push("/dashboard/user")
-            }
+        try {
+            const res = await axios.post("/api/login", formInput);
+            const data = res.data;
+            if (res.status === 200 || res.status === 201) {
+                if (data.role === "admin" || data.role === "viewer") {
+                    router.push("/dashboard/admin")
+                } else {
+                    router.push("/dashboard/user")
+                }
 
-        } else {
-            data.message
+            }
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Login failed");
+            }
         }
     }
+
     return (
-        <LoginPage>
-            <Image
-                src={UiPicture.Login2}
-                alt='Login Image'
-                className='img'>
-            </Image>
-            <form onSubmit={formSubmit}>
-                <h2>Welcome to</h2>
-                <h1>Task Management</h1>
-                <div className="box-1">
-                    <Image src={UiPicture.GoogleIcon} alt='Google Icon'></Image>   <p>Login With Google</p>
-                </div>
-                <div className="box-1">
-                    <Image src={UiPicture.Facebook} alt='Google Icon'></Image>   <p>Login With Facebook</p>
-                </div>
-                <div className='border'>-------------------------------------------- OR ---------------------------------------------</div>
+        <div className="stage">
+            <ToastContainer position="top-right" autoClose={3000} />
+            <div className={`glow ${isOn ? "on" : ""}`} />
+            <div className="stage-col-1">
+                {!isOn && (
+                    <div className="lampMessage">
+                        on the lamp for login
+                    </div>
+                )}
+                <Image
+                    src={UiPicture.Lamp}
+                    alt='Login Image'
+                    width={400}
+                    height={400}
+                    className='img'>
+                </Image>
+                <button
+                    type="button"
+                    className={`lampButton ${isOn ? "on" : ""}`}
+                    aria-pressed={isOn}
+                    aria-label={isOn ? "Turn lamp off" : "Turn lamp on to sign in"}
+                    onClick={() => setIsOn((v) => !v)}
+                >
+                    <span className={`lampNeck ${isOn ? "on" : ""}`} />
+                    <span className="lampBase" />
+                    <span className="lampCaption">
+                    </span>
+                    <span
+                        className={`cord ${pulling ? "pulling" : ""}`}
+                        onMouseDown={handleMouseDown}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseLeave}
+                    >  <span className="cordBead" />
+                    </span>
+                </button>
+            </div>
+            <form
+                className={`card ${isOn ? "visible" : ""}`}
+                onSubmit={formSubmit}
+            >
+                <h2 className="cardTitle">Welcome to Task Management</h2>
+                <p>"If you are logging in as a viewer, please use the following credentials:
+                    Email: viewer@test.com
+                    Password: Password@123"</p>
                 <div className='input' onClick={handleClick}>
-                    <div className="email"><MdEmail size={30} /></div>
-                    <div>
-                        <label>email</label>
+                    <div className="field">
+                        <label className="fieldLabel">email</label>
                         <input type="email"
+                            className="fieldInput"
                             ref={inputRef}
                             placeholder='Enter Email'
                             name='email'
@@ -89,12 +144,12 @@ const Login = () => {
                         />
                     </div>
                 </div>
-                <div className='input password' onClick={refClick}>
+                <div className="field" onClick={refClick}>
                     <div className='row-1'>
-                        <div><FaKey size={30} /></div>
                         <div>
-                            <label>Password</label>
+                            <label className="fieldLabel">Password</label>
                             <input type={icon ? "text" : "password"}
+                                className="fieldInput"
                                 ref={inputPasswordRef}
                                 placeholder='Enter Password'
                                 name='password'
@@ -103,19 +158,55 @@ const Login = () => {
                             />
                         </div>
                     </div>
-                    <div onClick={() => setIcon(!icon)}>{icon ? <IoIosEye /> : <IoEyeOffSharp />} </div>
                 </div>
-                <div className="forgot">
-                    <div className="check">
-                        <input type="checkbox" />
-                        <p>Remember Me</p>
-                    </div>
-                    <p className='forgotPassword'>Forgot Password</p>
-                </div>
-                <button className='btn'>Login</button>
-            </form>
-        </LoginPage>
-    )
-}
+                <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    marginBottom: "20px",
+                    fontSize: "14px",
+                    boxSizing: "border-box"
+                }}>
+                    <label style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        cursor: "pointer",
+                        userSelect: "none",
+                        color: "#374151"
+                    }}>
+                        <input
+                            type="checkbox"
+                            style={{
+                                cursor: "pointer",
+                                width: "16px",
+                                height: "16px",
+                                accentColor: "#2563eb"
+                            }}
+                        />
+                        <span style={{
+                            color: "white"
+                        }}>Check In</span>
+                    </label>
 
-export default Login
+                    <a
+                        href="#"
+                        style={{
+                            color: "#2563eb",
+                            fontWeight: "500",
+                            textDecoration: "none",
+                            cursor: "pointer"
+                        }}
+                    >
+                        Forgot Password?
+                    </a>
+                </div>
+                <button type="submit" className="signInButton">
+                    Sign in
+                </button>
+
+            </form>
+        </div>
+    );
+}

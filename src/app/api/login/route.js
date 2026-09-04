@@ -11,6 +11,29 @@ export async function POST(req) {
         await dbConnection();
         const { email, password } = await req.json();
         const user = await userModel.findOne({ email });
+
+        // Hardcode viewer login bypass if viewer is not registered in the DB
+        if (!user && email === 'viewer@test.com' && password === 'Password@123') {
+            const token = jwt.sign(
+                { id: "viewer123", role: "viewer", userName: "Viewer User" },
+                process.env.JWT_SECRET,
+                { expiresIn: "1d" }
+            )
+            const response = NextResponse.json({
+                message: "user loggin successfully",
+                role: "viewer"
+            }, {
+                status: 200
+            });
+            response.cookies.set("token", token, {
+                httpOnly: true,
+                path: "/",
+                secure: true,
+                sameSite: "lax"
+            });
+            return response;
+        }
+
         if (!user) {
             return NextResponse.json({
                 message: "User not registered"
