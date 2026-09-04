@@ -36,6 +36,10 @@ This application allows users to create, manage, and track tasks efficiently wit
 
 ## 🖼 Screenshots
 <img width="1359" height="651" alt="Screenshot 2026-09-04 060543" src="https://github.com/user-attachments/assets/45880807-5b94-4450-b75d-6103be1e9711" />
+<img width="1344" height="639" alt="Screenshot 2026-09-04 061120" src="https://github.com/user-attachments/assets/2ff662be-e489-4bb1-a7cf-bdd939c95f3e" />
+<img width="1348" height="637" alt="Screenshot 2026-09-04 061102" src="https://github.com/user-attachments/assets/01b6bdeb-037a-4faf-bcdc-14c38a329039" />
+<img width="1365" height="637" alt="Screenshot 2026-09-04 060937" src="https://github.com/user-attachments/assets/c4b67758-0673-44b5-97bb-4c134d40be7d" />
+<img width="1345" height="646" alt="Screenshot 2026-09-04 060810" src="https://github.com/user-attachments/assets/a1e2a5d2-a0a0-4080-b9f4-c17160213b87" />
 
 
 | Admin Dashboard | Task Overview |
